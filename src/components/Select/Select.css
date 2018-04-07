@@ -1,0 +1,45 @@
+.select {
+  width: 300px;
+  border: 1px solid #dedede;
+  color: #333;
+}
+
+.select .select__list {
+  display: none;
+}
+
+.select.is-open .select__list {
+  display: block;
+}
+
+.select__toggle {
+  padding: 0.5em;
+  width: 100%;
+  border: none;
+  border-bottom: 1px solid #dedede;
+  font-size: 1rem;
+  text-align: left;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.select__list {
+  width: 100%;
+  list-style: none;
+}
+
+.select__option {
+  padding: 0.5em;
+  width: 100%;
+  border-bottom: 1px solid #dedede;
+  cursor: pointer;
+}
+
+.select__option:last-child {
+  border: none;
+}
+
+.select__option.is-focus,
+.select__option:hover {
+  background-color: #dedede;
+}
