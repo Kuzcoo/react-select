@@ -26,6 +26,36 @@ export class Select extends Component {
     this.getActiveOptionId = this.getActiveOptionId.bind(this);
   }
 
+  handleKey(e) {
+    switch (e.keyCode) {
+      case KEY.ENTER:
+      case KEY.SPACE:
+        if (this.state.isOpen && this.state.focusIndex > 0) {
+          this.props.onChooseItem(
+            this.getOptionNameFromFocus(this.state.focusIndex)
+          );
+        }
+      break;
+      case KEY.UP:
+        this.setState(prevState => ({
+          focusIndex: this.getPrevIndex(prevState.focusIndex)
+        }));
+      break;
+      case KEY.DOWN:
+        if (!this.state.isOpen) return this.toggleSelect(e);
+
+        this.setState(prevState => ({
+          focusIndex: this.getNextIndex(prevState.focusIndex)
+        }));
+      break;
+    }
+  }
+
+  handleOptionClick(e, optionName) {
+    this.props.onChooseItem(optionName);
+    this.toggleSelect(e);
+  }
+
   toggleSelect(e) {
     e.preventDefault();
 
@@ -59,36 +89,6 @@ export class Select extends Component {
 
   getOptionIdByIndex(index) {
     return `select-option-${index}`;
-  }
-
-  handleKey(e) {
-    switch (e.keyCode) {
-      case KEY.ENTER:
-      case KEY.SPACE:
-        if (this.state.isOpen && this.state.focusIndex > 0) {
-          this.props.onChooseItem(
-            this.getOptionNameFromFocus(this.state.focusIndex)
-          );
-        }
-      break;
-      case KEY.UP:
-        this.setState(prevState => ({
-          focusIndex: this.getPrevIndex(prevState.focusIndex)
-        }));
-      break;
-      case KEY.DOWN:
-        if (!this.state.isOpen) return this.toggleSelect(e);
-
-        this.setState(prevState => ({
-          focusIndex: this.getNextIndex(prevState.focusIndex)
-        }));
-      break;
-    }
-  }
-
-  handleOptionClick(e, optionName) {
-    this.props.onChooseItem(optionName);
-    this.toggleSelect(e);
   }
 
   getPrevIndex(focusIndex) {
