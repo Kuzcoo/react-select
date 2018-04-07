@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import propTypes from 'prop-types';
 import './Select.css';
 
 const CLASS_OPEN = 'is-open';
@@ -12,6 +13,16 @@ const KEY = {
 };
 
 export class Select extends Component {
+
+  static propTypes = {
+    onChooseItem: propTypes.func.isRequired,
+    selectedValue: propTypes.string.isRequired,
+    options: propTypes.arrayOf(propTypes.shape({
+      id: propTypes.number.isRequired,
+      name: propTypes.string.isRequired
+    }))
+  };
+
   constructor(props) {
     super(props);
 
@@ -30,11 +41,14 @@ export class Select extends Component {
     switch (e.keyCode) {
       case KEY.ENTER:
       case KEY.SPACE:
-        if (this.state.isOpen && this.state.focusIndex > 0) {
+        if (this.state.isOpen && this.state.focusIndex >= 0) {
           this.props.onChooseItem(
             this.getOptionNameFromFocus(this.state.focusIndex)
           );
         }
+      break;
+      case KEY.ESC:
+        this.closeSelect();
       break;
       case KEY.UP:
         this.setState(prevState => ({
