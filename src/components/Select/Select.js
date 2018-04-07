@@ -65,7 +65,7 @@ export class Select extends Component {
     switch (e.keyCode) {
       case KEY.ENTER:
       case KEY.SPACE:
-        if (this.state.isOpen) {
+        if (this.state.isOpen && this.state.focusIndex > 0) {
           this.props.onChooseItem(
             this.getOptionNameFromFocus(this.state.focusIndex)
           );
