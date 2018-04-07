@@ -2,13 +2,7 @@ import React, {Component} from 'react';
 import {Select} from '../Select/Select';
 import './Form.css';
 
-const options = [
-  {id: 0, name: 'strawberry'},
-  {id: 1, name: 'banana'},
-  {id: 2, name: 'apple'},
-  {id: 3, name: 'cherry'},
-  {id: 4, name: 'orange'}
-];
+const MOCK_URL = './mocks/fruits.json';
 
 const DEFAULT_VALUE = 'Choose a fruit';
 
@@ -17,11 +11,24 @@ export class Form extends Component {
     super(props);
 
     this.state = {
-      fruitValue: DEFAULT_VALUE
+      fruitValue: DEFAULT_VALUE,
+      fruits: []
     }
 
     this.updateFruitValue = this.updateFruitValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  componentDidMount() {
+    fetch(MOCK_URL)
+      .then(response => response.json())
+      .then(json => {
+        setTimeout(() => {
+          this.setState({
+            fruits: json.fruits
+          })
+        }, 1000);
+      });
   }
 
   updateFruitValue(name) {
@@ -40,10 +47,13 @@ export class Form extends Component {
     return (
       <form onSubmit={this.handleSubmit}>
         <h2>React Select Poc</h2>
-        <Select 
-          onChooseItem={this.updateFruitValue}
-          selectedValue={this.state.fruitValue}
-          options={options} />
+        {this.state.fruits.length > 0
+          ? <Select
+            onChooseItem={this.updateFruitValue}
+            selectedValue={this.state.fruitValue}
+            options={this.state.fruits} />
+          : <div>Load data...</div>
+        }
 
         <input type='submit' value='Submit!' />
       </form>
