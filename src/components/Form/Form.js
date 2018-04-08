@@ -9,13 +9,11 @@ const DEFAULT_VALUE = 'Choose a fruit';
 export class Form extends Component {
   constructor(props) {
     super(props);
-
+    this.fruitRef = React.createRef();
     this.state = {
-      fruitValue: DEFAULT_VALUE,
       fruits: []
     }
 
-    this.updateFruitValue = this.updateFruitValue.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -31,16 +29,9 @@ export class Form extends Component {
       });
   }
 
-  updateFruitValue(name) {
-    this.setState({
-      fruitValue: name
-    });
-  }
-
   handleSubmit(e) {
     e.preventDefault();
-
-    console.info(`[info] - Enjoy your ${this.state.fruitValue}!`);
+    console.info(`[info] - Enjoy your ${this.fruitRef.current.value}!`);
   }
 
   render() {
@@ -49,8 +40,8 @@ export class Form extends Component {
         <h2>React Select Poc</h2>
         {this.state.fruits.length > 0
           ? <Select
-            onChooseItem={this.updateFruitValue}
-            selectedValue={this.state.fruitValue}
+            value={this.fruitRef}
+            defaultValue={DEFAULT_VALUE}
             options={this.state.fruits} />
           : <div>Load data...</div>
         }

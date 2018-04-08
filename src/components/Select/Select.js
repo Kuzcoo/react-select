@@ -15,8 +15,7 @@ const KEY = {
 export class Select extends Component {
 
   static propTypes = {
-    onChooseItem: propTypes.func.isRequired,
-    selectedValue: propTypes.string.isRequired,
+    defaultValue: propTypes.string.isRequired,
     options: propTypes.arrayOf(propTypes.shape({
       id: propTypes.number.isRequired,
       name: propTypes.string.isRequired
@@ -27,14 +26,17 @@ export class Select extends Component {
     super(props);
 
     this.state = {
-      isOpen: false
+      isOpen: false,
+      focusIndex: -1,
+      selectedValue: this.props.defaultValue
     }
 
     this.toggleSelect = this.toggleSelect.bind(this);
     this.closeSelect = this.closeSelect.bind(this);
+    this.chooseItem = this.chooseItem.bind(this);
     this.handleKey = this.handleKey.bind(this);
+    this.getOptionIdByIndex = this.getOptionIdByIndex.bind(this);
     this.handleOptionClick = this.handleOptionClick.bind(this);
-    this.getActiveOptionId = this.getActiveOptionId.bind(this);
   }
 
   handleKey(e) {
@@ -42,8 +44,8 @@ export class Select extends Component {
       case KEY.ENTER:
       case KEY.SPACE:
         if (this.state.isOpen && this.state.focusIndex >= 0) {
-          this.props.onChooseItem(
-            this.getOptionNameFromFocus(this.state.focusIndex)
+          this.chooseItem(
+            this.getOptionNameByIndex(this.state.focusIndex)
           );
         }
       break;
@@ -66,8 +68,14 @@ export class Select extends Component {
   }
 
   handleOptionClick(e, optionName) {
-    this.props.onChooseItem(optionName);
+    this.chooseItem(optionName);
     this.toggleSelect(e);
+  }
+
+  chooseItem(optionName) {
+    this.setState({
+      selectedValue: optionName
+    });
   }
 
   toggleSelect(e) {
@@ -95,13 +103,8 @@ export class Select extends Component {
       CLASS_FOCUS : '';
   }
 
-  getActiveOptionId() {
-    if (this.state.focusIndex === -1) return null;
-
-    return this.getOptionIdByIndex(this.state.focusIndex);
-  }
-
   getOptionIdByIndex(index) {
+    if (index === -1) return null;
     return `select-option-${index}`;
   }
 
@@ -113,7 +116,7 @@ export class Select extends Component {
     return Math.min(focusIndex + 1, this.props.options.length - 1);
   }
 
-  getOptionNameFromFocus(index) {
+  getOptionNameByIndex(index) {
     return this.props.options[index].name;
   }
 
@@ -122,15 +125,17 @@ export class Select extends Component {
       <div 
         className={`select ${this.getClassState()}`}
         onKeyDown={this.handleKey}>
-        <button 
+        <button
+          ref={this.props.value}
+          value={this.state.selectedValue}
           aria-controls='select-list'
           aria-owns='select-list'
           aria-expanded={this.state.isOpen}
-          aria-activedescendant={this.getActiveOptionId()}
+          aria-activedescendant={this.getOptionIdByIndex(this.state.focusIndex)}
           className='select__toggle'
           onClick={this.toggleSelect}
           onBlur={this.closeSelect}>
-          {this.props.selectedValue || this.props.defaultValue}
+          {this.state.selectedValue}
         </button>
         <ul
           role='listbox'
